@@ -918,7 +918,19 @@ additionally is converted to a Context with the new character size bytesize.
 
 =item chunks
 
-I<To be done.>
+[ [I<$str1>, I<$attr1>], [I<$str2>, I<$attr2>], ... ] = I<$Ct> -> chunks ()
+
+Until now this is the only way to traverse a Context by it's different
+attributes. You would use it like:
+
+   for ( @{$Ct1->chunks()} ) {
+      my ($text, $attrib) = @{$_};
+      if ($attrib) {
+         # do something (text has attribute $attrib)
+      } else {
+         # do something (text has default attribute)
+      }
+   }
 
 =item clone
 
@@ -1185,9 +1197,16 @@ can also be code references.
 
 - Speeding up
 
-- Support for a hash parameter style for calling methods.
+- When programming this a long time ago I was very fond of references.
+  Today this seems quite odd to me sometimes. So there might happen a
+  major redesign sooner or later.
 
-- Support for overloaded operators
+- The only real way to traverse a Context is still method "chunks()".
+  There need to be some enhancements.
+
+- Support for a hash parameter style for calling methods?
+
+- Support for overloaded operators?
 
 =head1 AUTHOR
 

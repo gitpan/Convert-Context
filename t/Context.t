@@ -15,6 +15,7 @@ my @test = (
    ["test_append",   "append"], 
    ["test_attrib",   "attrib"], 
    ["test_charsize", "charsize"], 
+   ["test_chunks",   "chunks"], 
    ["test_clone",    "clone"],
    ["test_Ctnew",    "new"],
    ["test_eq_ne",    "eq, ne"],
@@ -218,6 +219,44 @@ sub test_charsize {
    $Two -> charsize(1); return 0 if $One -> eq ($Two);
    $One -> charsize(1); return 0 if $One -> ne ($Two);
    return 0 if $One -> ne ($One_Clone);
+1}
+
+sub test_chunks {
+   {
+      #
+      # Test 1
+      #
+      my $Ct1 = new (
+         [\"Konger", ["b"]],
+         [\" tenker mere på slikt enn på "],
+         [\"fredens", ["em"]],
+         [\" gagnlige sysler; for dem gjelder det mere hvordan de "],
+         [\"med lovlige - eller ulovlige - midler kan vinne "],
+         [\"nytt land", ["em"]],
+         [\", enn hvordan de best kan styre det landet de allerede har."],
+      );
+      $Ct1 -> replace ( "Konger", "Manager", "g" );
+      $Ct1 -> replace ( 'land\w*', "forretning", "g" );
+      my $s = "";
+      for ( @{$Ct1->chunks()} ) {
+         my ($text, $attrib) = @{$_};
+         if ($attrib) {
+            $s .= "<$attrib>$text</$attrib>";
+         } else {
+            $s .= "$text";
+         }
+      }
+      my $s2 = 
+         "<b>Manager</b> tenker mere på slikt enn på <em>fredens</em> ".
+         "gagnlige sysler; for dem gjelder det mere hvordan de med lovlige - ".
+         "eller ulovlige - midler kan vinne <em>nytt forretning</em>, enn ".
+         "hvordan de best kan styre det forretning de allerede har."
+      ;
+      if ($s ne $s2) {
+         print "'$s'\n'$s2'\n";
+      }
+      return 0 if $s ne $s2;
+   }
 1}
 
 sub test_clone {
